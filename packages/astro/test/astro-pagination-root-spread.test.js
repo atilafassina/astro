@@ -10,6 +10,9 @@ describe('Pagination root', () => {
 			root: './fixtures/astro-pagination-root-spread/',
 			site: 'https://mysite.dev/',
 			base: '/blog',
+			build: {
+				format: 'file',
+			},
 		});
 		await fixture.build();
 	});

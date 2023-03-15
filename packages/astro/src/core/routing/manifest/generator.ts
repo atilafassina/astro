@@ -4,7 +4,8 @@ import { compile } from 'path-to-regexp';
 
 export function getRouteGenerator(
 	segments: RoutePart[][],
-	addTrailingSlash: AstroConfig['trailingSlash']
+	addTrailingSlash: AstroConfig['trailingSlash'],
+	buildFormat: AstroConfig['build']['format'] = 'directory'
 ) {
 	const template = segments
 		.map((segment) => {
@@ -31,9 +32,14 @@ export function getRouteGenerator(
 		})
 		.join('');
 
-	// Unless trailingSlash config is set to 'always', don't automatically append it.
+	/**
+	 * If `addTrailingSlash` is 'always'
+	 * or `buildFormat` is 'directory' and `addTrailingSlash` is not "never"
+	 */
+	const shouldAddTrailingSlash =
+		addTrailingSlash === 'always' || (buildFormat === 'directory' && addTrailingSlash !== 'never');
 	let trailing: '/' | '' = '';
-	if (addTrailingSlash === 'always' && segments.length) {
+	if (shouldAddTrailingSlash && segments.length) {
 		trailing = '/';
 	}
 	const toPath = compile(template + trailing);
